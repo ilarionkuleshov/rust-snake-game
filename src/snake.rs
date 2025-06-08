@@ -14,7 +14,7 @@ impl Snake {
         Snake {
             x: ground.width / 2,
             y: ground.height / 2,
-            dx: 1,
+            dx: 2,
             dy: 0,
             is_alive: true,
         }
