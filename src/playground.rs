@@ -13,7 +13,7 @@ impl Playground {
         let (width, height) = crossterm::terminal::size().unwrap();
         Playground {
             width: width as i16,
-            height: (height - 1) as i16,
+            height: (height - 2) as i16,
             apple_x: None,
             apple_y: None,
         }

@@ -1,4 +1,4 @@
-use crossterm::{execute, terminal};
+use crossterm::{ExecutableCommand, cursor, execute, terminal};
 use std::io::{self, Write};
 
 use crate::playground;
@@ -9,6 +9,8 @@ pub fn clear() {
 }
 
 pub fn draw(playground: &playground::Playground, snake: &snake::Snake) {
+    io::stdout().execute(cursor::MoveTo(0, 0)).unwrap();
+
     for y in 0..playground.height {
         for x in 0..playground.width {
             if y == 0 || y == playground.height - 1 || x == 0 || x == playground.width - 1 {
@@ -34,6 +36,11 @@ pub fn draw(playground: &playground::Playground, snake: &snake::Snake) {
             }
         }
         print!("\r\n");
+    }
+    if snake.is_alive {
+        print!("Score {}", snake.score);
+    } else {
+        print!("Game Over! Final Score: {}", snake.score);
     }
     io::stdout().flush().unwrap();
 }

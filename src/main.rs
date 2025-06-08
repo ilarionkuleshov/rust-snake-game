@@ -24,12 +24,10 @@ fn main() {
         screen::clear();
         screen::draw(&playground, &snake);
 
-        if snake.is_alive {
-            // print!("Score {}", snake.score);
-        } else {
-            print!("Game Over! Final Score: {}", snake.score);
+        if !snake.is_alive {
             break;
         }
     }
     terminal::disable_raw_mode().unwrap();
+    println!();
 }
