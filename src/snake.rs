@@ -1,76 +1,74 @@
 use crate::keyboard::KeyboardEvent;
 use crate::playground::Playground;
+use crate::vector::Vector;
 
 pub struct Snake {
-    pub x: Vec<i16>,
-    pub y: Vec<i16>,
-    pub dx: i16,
-    pub dy: i16,
+    pub positions: Vec<Vector>,
+    pub direction: Vector,
     pub is_alive: bool,
     pub score: u32,
 }
 
 impl Snake {
     pub fn new(playground: &Playground) -> Snake {
+        let head_position = Vector {
+            x: playground.size.x / 2,
+            y: playground.size.y / 2,
+        };
         Snake {
-            x: vec![playground.width / 2],
-            y: vec![playground.height / 2],
-            dx: 1,
-            dy: 0,
+            positions: vec![
+                // head_position.offset(Vector{x:-2, y:0}),
+                head_position.offset(Vector { x: -1, y: 0 }),
+                head_position,
+            ],
+            direction: Vector { x: 1, y: 0 },
             is_alive: true,
             score: 0,
         }
     }
 
-    pub fn update(
-        &mut self,
-        playground: &Playground,
-        keyboard_event: Option<KeyboardEvent>,
-    ) -> bool {
+    pub fn update(&mut self, playground: &Playground, keyboard_event: Option<KeyboardEvent>) {
         match keyboard_event {
             Some(KeyboardEvent::Up) => {
-                if self.dy != 1 {
-                    self.dx = 0;
-                    self.dy = -1;
+                if self.direction.y != 1 {
+                    self.direction.x = 0;
+                    self.direction.y = -1;
                 }
             }
             Some(KeyboardEvent::Down) => {
-                if self.dy != -1 {
-                    self.dx = 0;
-                    self.dy = 1;
+                if self.direction.y != -1 {
+                    self.direction.x = 0;
+                    self.direction.y = 1;
                 }
             }
             Some(KeyboardEvent::Left) => {
-                if self.dx != 1 {
-                    self.dx = -1;
-                    self.dy = 0;
+                if self.direction.x != 1 {
+                    self.direction.x = -1;
+                    self.direction.y = 0;
                 }
             }
             Some(KeyboardEvent::Right) => {
-                if self.dx != -1 {
-                    self.dx = 1;
-                    self.dy = 0;
+                if self.direction.x != -1 {
+                    self.direction.x = 1;
+                    self.direction.y = 0;
                 }
             }
             _ => {}
         }
-        let x = self.x.last().unwrap() + self.dx;
-        let y = self.y.last().unwrap() + self.dy;
+        let position = Vector {
+            x: self.positions.last().unwrap().x + self.direction.x,
+            y: self.positions.last().unwrap().y + self.direction.y,
+        };
 
-        if x <= 0 || x >= playground.width - 1 || y <= 0 || y >= playground.height - 1 {
+        if !playground.contains(&position) {
             self.is_alive = false;
-            false
         } else {
-            self.x.push(x);
-            self.y.push(y);
-            if playground.apple_x == Some(x) && playground.apple_y == Some(y) {
+            if playground.apples.contains(&position) {
                 self.score += 1;
-                true
             } else {
-                self.x.remove(0);
-                self.y.remove(0);
-                false
+                self.positions.remove(0);
             }
+            self.positions.push(position);
         }
     }
 }
