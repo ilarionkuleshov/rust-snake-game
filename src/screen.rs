@@ -18,10 +18,20 @@ pub fn draw(playground: &playground::Playground, snake: &snake::Snake) {
             if !playground.contains(&pos) {
                 print!("#");
             } else if snake.positions.contains(&pos) {
-                if snake.is_alive {
-                    print!("O");
+                if snake.positions.last().unwrap() == &pos {
+                    if snake.direction.x > 0 {
+                        print!("▶");
+                    } else if snake.direction.x < 0 {
+                        print!("◀");
+                    } else if snake.direction.y > 0 {
+                        print!("▼");
+                    } else if snake.direction.y < 0 {
+                        print!("▲");
+                    }
+                } else if snake.is_alive {
+                    print!("o");
                 } else {
-                    print!("X");
+                    print!("x");
                 }
             } else if playground.apples.contains(&pos) {
                 print!("*");

@@ -27,28 +27,28 @@ impl Snake {
         }
     }
 
-    pub fn update(&mut self, playground: &Playground, keyboard_event: Option<KeyboardEvent>) {
+    pub fn update(&mut self, playground: &Playground, keyboard_event: &Option<KeyboardEvent>) {
         match keyboard_event {
             Some(KeyboardEvent::Up) => {
-                if self.direction.y != 1 {
+                if self.direction.y <= 0 {
                     self.direction.x = 0;
                     self.direction.y = -1;
                 }
             }
             Some(KeyboardEvent::Down) => {
-                if self.direction.y != -1 {
+                if self.direction.y >= 0 {
                     self.direction.x = 0;
                     self.direction.y = 1;
                 }
             }
             Some(KeyboardEvent::Left) => {
-                if self.direction.x != 1 {
+                if self.direction.x <= 0 {
                     self.direction.x = -1;
                     self.direction.y = 0;
                 }
             }
             Some(KeyboardEvent::Right) => {
-                if self.direction.x != -1 {
+                if self.direction.x >= 0 {
                     self.direction.x = 1;
                     self.direction.y = 0;
                 }
@@ -60,7 +60,7 @@ impl Snake {
             y: self.positions.last().unwrap().y + self.direction.y,
         };
 
-        if !playground.contains(&position) {
+        if !playground.contains(&position) || self.positions.contains(&position) {
             self.is_alive = false;
         } else {
             if playground.apples.contains(&position) {
